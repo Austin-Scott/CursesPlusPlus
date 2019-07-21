@@ -156,6 +156,7 @@
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CursesSystem.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="CursesPlusPlus.h" />
     <ClInclude Include="CursesSystem.h" />
+    <ClInclude Include="Cursor.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,5 @@
 #pragma once
+#include "Cursor.h"
 #include <memory>
 #include <optional>
 #include <string>
@@ -26,8 +27,14 @@ public:
 
 	~Window();
 
-
+	void updateSizeAndPosition();
 	void refresh();
+
+	void clear();
+
+	void drawBorder(char ls = 0, char rs = 0, char ts = 0, char bs = 0, char tl = 0, char tr = 0, char bl = 0, char br = 0);
+
+	const Window& operator<<(Cursor rhs) const;
 
 	void setScroll(bool value = true);
 
@@ -41,7 +48,6 @@ public:
 
 	void snapToParent(Window parent, float height, float width, float y, float x);
 
-	void print(std::string str);
 
 	std::optional<int> getChar();
 

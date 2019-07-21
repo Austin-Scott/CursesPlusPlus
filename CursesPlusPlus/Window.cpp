@@ -1,10 +1,34 @@
+#include "Cursor.h"
 #include "Window.h"
+#include "CursesSystem.h"
+#include <map>
+#include <vector>
 #include <curses.h>
+
+const std::map<Color, int> colorTable {
+	{Color::Black, COLOR_BLACK},
+	{Color::Red, COLOR_RED},
+	{Color::Green, COLOR_GREEN},
+	{Color::Yellow, COLOR_YELLOW},
+	{Color::Blue, COLOR_BLUE},
+	{Color::Magenta, COLOR_MAGENTA},
+	{Color::Cyan, COLOR_CYAN},
+	{Color::White, COLOR_WHITE}
+};
+
+struct ColorPair {
+	unsigned int id;
+	bool isSet;
+	Color foreground;
+	Color background;
+};
 
 class WindowReference {
 private:
 	WINDOW* window;
 	bool isRoot;
+	Color foreground = Color::White;
+	Color background = Color::Black;
 public:
 	WINDOW* getWINDOW() {
 		if (isRoot) {
@@ -12,6 +36,59 @@ public:
 		}
 		else {
 			return window;
+		}
+	}
+	Color getForeground() {
+		return foreground;
+	}
+	Color getBackground() {
+		return background;
+	}
+	void setForeground(Color value) {
+		foreground = value;
+	}
+	void setBackground(Color value) {
+		background = value;
+	}
+	void useCurrentColor() {
+		if (CursesSystem::isColorEnabled()) {
+			static std::vector<ColorPair> colorPairs = []() {
+				std::vector<ColorPair> result;
+				for (int i = 1; i < COLOR_PAIRS; i++) {
+					ColorPair pair;
+					pair.id = i;
+					pair.isSet = false;
+					result.push_back(pair);
+				}
+				return result;
+			}();
+			int pairIndex = 0;
+			for (ColorPair &pair : colorPairs) {
+				if (!pair.isSet) {
+					pair.isSet = true;
+					pair.foreground = foreground;
+					pair.background = background;
+					init_pair(pair.id, colorTable.at(foreground), colorTable.at(background));
+					break;
+				}
+				if (foreground == pair.foreground && background == pair.background) {
+					break;
+				}
+				pairIndex++;
+			}
+			if (pairIndex == colorPairs.size()) {
+				colorPairs.back().foreground = foreground;
+				colorPairs.back().background = background;
+				init_pair(colorPairs.back().id, colorTable.at(foreground), colorTable.at(background));
+				pairIndex--;
+			}
+			ColorPair chosenPair = colorPairs[pairIndex];
+			for (int i = pairIndex; i > 0; i--) {
+				colorPairs[i] = colorPairs[i - 1];
+			}
+			colorPairs[0] = chosenPair;
+			wattron(getWINDOW(), COLOR_PAIR(chosenPair.id));
+			wbkgd(getWINDOW(), COLOR_PAIR(chosenPair.id));
 		}
 	}
 	int getX() {
@@ -97,7 +174,7 @@ std::weak_ptr<WindowReference> Window::getWindowReference() {
 	return window;
 }
 
-void Window::refresh()
+void Window::updateSizeAndPosition()
 {
 	if (snapped) {
 		if (auto prnt = parent.lock()) {
@@ -112,8 +189,56 @@ void Window::refresh()
 			snapped = false;
 		}
 	}
-	box(window->getWINDOW(), 0, 0);
+}
+
+void Window::refresh()
+{
 	wrefresh(window->getWINDOW());
+}
+
+void Window::clear()
+{
+	wclear(window->getWINDOW());
+}
+
+void Window::drawBorder(char ls, char rs, char ts, char bs, char tl, char tr, char bl, char br)
+{
+	wborder(window->getWINDOW(), ls, rs, ts, bs, tl, tr, bl, br);
+}
+
+const Window& Window::operator<<(Cursor rhs) const
+{
+	window->useCurrentColor();
+	switch (rhs.type) {
+	case Cursor::Type::Text:
+		wprintw(window->getWINDOW(), rhs.text.c_str());
+		break;
+	case Cursor::Type::AttributesOn:
+		wattron(window->getWINDOW(), rhs.attrMask);
+		break;
+	case Cursor::Type::AttributesOff:
+		wattroff(window->getWINDOW(), rhs.attrMask);
+		break;
+	case Cursor::Type::SetColor:
+		window->setBackground(rhs.background);
+		window->setForeground(rhs.foreground);
+		break;
+	case Cursor::Type::Move:
+		wmove(window->getWINDOW(), rhs.row, rhs.col);
+		break;
+	case Cursor::Type::EndLine:
+		wprintw(window->getWINDOW(), "\n");
+		break;
+	case Cursor::Type::ClearToEndOfLine:
+		wclrtoeol(window->getWINDOW());
+		break;
+	case Cursor::Type::ClearToEndOfWindow:
+		wclrtobot(window->getWINDOW());
+		break;
+	default:
+		break;
+	}
+	return *this;
 }
 
 void Window::setScroll(bool value)
@@ -161,11 +286,6 @@ void Window::snapToParent(Window parent, float height, float width, float y, flo
 	this->width = width;
 	this->x = x;
 	this->y = y;
-}
-
-void Window::print(std::string str)
-{
-	waddstr(window->getWINDOW(), str.c_str());
 }
 
 std::optional<int> Window::getChar()

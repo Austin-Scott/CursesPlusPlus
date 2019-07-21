@@ -2,6 +2,7 @@
 #include <curses.h>
 
 CursesSystem CursesSystem::system = CursesSystem();
+bool CursesSystem::colorEnabled = false;
 
 CursesSystem::CursesSystem()
 {
@@ -60,11 +61,26 @@ void CursesSystem::inputNewLine(bool value)
 	}
 }
 
-void CursesSystem::refreshRootDimensions()
+void CursesSystem::color()
+{
+	if (has_colors()) {
+		start_color();
+		colorEnabled = true;
+	}
+}
+
+bool CursesSystem::isColorEnabled()
+{
+	return colorEnabled;
+}
+
+bool CursesSystem::refreshRootDimensions()
 {
 	if (is_termresized()) {
 		resize_term(0, 0);
+		return true;
 	}
+	return false;
 }
 
 Window& CursesSystem::getRootWindow()

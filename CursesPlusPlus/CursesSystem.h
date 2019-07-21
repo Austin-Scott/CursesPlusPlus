@@ -4,6 +4,7 @@
 class CursesSystem {
 private:
 	static CursesSystem system;
+	static bool colorEnabled;
 
 	Window* rootWindow;
 
@@ -18,8 +19,11 @@ public:
 	static void halfDelay(unsigned char tenthsOfSeconds);
 	static void noDelay(bool value = true);
 	static void inputNewLine(bool value = true);
+	static void color();
 
-	static void refreshRootDimensions();
+	static bool isColorEnabled();
+
+	static bool refreshRootDimensions();
 
 	static Window& getRootWindow();
 };
