@@ -70,20 +70,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)PDCurses;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)PDCurses\wincon;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)SDL2\include;$(SolutionDir)PDCurses;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)SDL2\lib\x86;$(SolutionDir)PDCurses\sdl2;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)PDCurses;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)PDCurses\wincon;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)SDL2\include;$(SolutionDir)PDCurses;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)SDL2\lib\x86;$(SolutionDir)PDCurses\sdl2;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)PDCurses;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)PDCurses\wincon;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)SDL2\include;$(SolutionDir)PDCurses;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)SDL2\lib\x64;$(SolutionDir)PDCurses\sdl2;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)PDCurses;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)PDCurses\wincon;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)SDL2\include;$(SolutionDir)PDCurses;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)SDL2\lib\x64;$(SolutionDir)PDCurses\sdl2;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -94,10 +94,11 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>pdcurses.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>pdcurses.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <PreLinkEvent>
-      <Command>cd "$(SolutionDir)PDCurses\wincon" &amp;&amp; start cmd /c ""$(VSInstallDir)Common7\Tools\VsDevCmd.bat" &amp;&amp; set "PDCURSES_SRCDIR=$(SolutionDir)PDCurses" &amp;&amp; nmake -f Makefile.vc"</Command>
+      <Command>cd "$(SolutionDir)PDCurses\sdl2" &amp;&amp; start cmd /c ""$(VSInstallDir)Common7\Tools\VsDevCmd.bat" &amp;&amp; set "PDCURSES_SRCDIR=$(SolutionDir)PDCurses" &amp;&amp; set "SDLBASE=$(SolutionDir)SDL2" &amp;&amp; set "PLATFORM=$(PlatformShortName)" &amp;&amp; nmake -f Makefile.vc"</Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,10 +110,11 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>pdcurses.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>pdcurses.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <PreLinkEvent>
-      <Command>cd "$(SolutionDir)PDCurses\wincon" &amp;&amp; start cmd /c ""$(VSInstallDir)Common7\Tools\VsDevCmd.bat" &amp;&amp; set "PDCURSES_SRCDIR=$(SolutionDir)PDCurses" &amp;&amp; nmake -f Makefile.vc"</Command>
+      <Command>cd "$(SolutionDir)PDCurses\sdl2" &amp;&amp; start cmd /c ""$(VSInstallDir)Common7\Tools\VsDevCmd.bat" &amp;&amp; set "PDCURSES_SRCDIR=$(SolutionDir)PDCurses" &amp;&amp; set "SDLBASE=$(SolutionDir)SDL2" &amp;&amp; set "PLATFORM=$(PlatformShortName)" &amp;&amp; nmake -f Makefile.vc"</Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -129,10 +131,11 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>pdcurses.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>pdcurses.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <PreLinkEvent>
-      <Command>cd "$(SolutionDir)PDCurses\wincon" &amp;&amp; start cmd /c ""$(VSInstallDir)Common7\Tools\VsDevCmd.bat" &amp;&amp; set "PDCURSES_SRCDIR=$(SolutionDir)PDCurses" &amp;&amp; nmake -f Makefile.vc"</Command>
+      <Command>cd "$(SolutionDir)PDCurses\sdl2" &amp;&amp; start cmd /c ""$(VSInstallDir)Common7\Tools\VsDevCmd.bat" &amp;&amp; set "PDCURSES_SRCDIR=$(SolutionDir)PDCurses" &amp;&amp; set "SDLBASE=$(SolutionDir)SDL2" &amp;&amp; set "PLATFORM=$(PlatformShortName)" &amp;&amp; nmake -f Makefile.vc"</Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,10 +152,11 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>pdcurses.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>pdcurses.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
     <PreLinkEvent>
-      <Command>cd "$(SolutionDir)PDCurses\wincon" &amp;&amp; start cmd /c ""$(VSInstallDir)Common7\Tools\VsDevCmd.bat" &amp;&amp; set "PDCURSES_SRCDIR=$(SolutionDir)PDCurses" &amp;&amp; nmake -f Makefile.vc"</Command>
+      <Command>cd "$(SolutionDir)PDCurses\sdl2" &amp;&amp; start cmd /c ""$(VSInstallDir)Common7\Tools\VsDevCmd.bat" &amp;&amp; set "PDCURSES_SRCDIR=$(SolutionDir)PDCurses" &amp;&amp; set "SDLBASE=$(SolutionDir)SDL2" &amp;&amp; set "PLATFORM=$(PlatformShortName)" &amp;&amp; nmake -f Makefile.vc"</Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

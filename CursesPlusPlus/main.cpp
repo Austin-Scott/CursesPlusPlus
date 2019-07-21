@@ -1,10 +1,12 @@
 #include "CursesPlusPlus.h"
+#include <SDL.h>
 
-int main()
+int main(int argc, char* argv[])
 {
-	CursesSystem::halfDelay(10);
+	CursesSystem::halfDelay(1);
 	Window root = CursesSystem::getRootWindow();
-	Window win = Window(root, 1, 1, 0, 0);
+	Window win = Window(root, 0.8, 0.8, 0.1, 0.1);
+	Window test1 = Window(win, 0.5, 0.8, 0.1, 0.1);
 	win.setScroll();
 
 	while (true) {
@@ -17,6 +19,7 @@ int main()
 		CursesSystem::refreshRootDimensions();
 		root.refresh();
 		win.refresh();
+		test1.refresh();
 	}
 
 	return 0;

@@ -8,7 +8,7 @@ private:
 public:
 	WINDOW* getWINDOW() {
 		if (isRoot) {
-			return curscr;
+			return stdscr;
 		}
 		else {
 			return window;
@@ -17,46 +17,44 @@ public:
 	int getX() {
 		int x;
 		int y;
-		getyx(getWINDOW(), y, x);
+		getbegyx(getWINDOW(), y, x);
 		return x;
 	}
 	int getY() {
 		int x;
 		int y;
-		getyx(getWINDOW(), y, x);
+		getbegyx(getWINDOW(), y, x);
 		return y;
 	}
 	int getWidth() {
+		if (isRoot) {
+			return COLS;
+		}
+
 		int mx;
 		int my;
 		getmaxyx(getWINDOW(), my, mx);
 		return mx;
 	}
 	int getHeight() {
+		if (isRoot) {
+			return LINES;
+		}
+
 		int mx;
 		int my;
 		getmaxyx(getWINDOW(), my, mx);
 		return my;
 	}
-	void setX(int value) {
-		if (isRoot) return;
+	void setPosition(int y, int x) {
+		if (isRoot || (x == getX() && y == getY())) return;
 
-		mvwin(window, getY(), value);
+		mvwin(window, y, x);
 	}
-	void setY(int value) {
-		if (isRoot) return;
+	void setSize(int height, int width) {
+		if (isRoot || (width == getWidth() && height == getHeight())) return;
 
-		mvwin(window, value, getX());
-	}
-	void setWidth(int value) {
-		if (isRoot) return;
-
-		wresize(window, getHeight(), value);
-	}
-	void setHeight(int value) {
-		if (isRoot) return;
-
-		wresize(window, value, getWidth());
+		wresize(window, height, width);
 	}
 	WindowReference(WINDOW* window, bool isRoot = false) {
 		this->isRoot = isRoot;
@@ -101,19 +99,21 @@ std::weak_ptr<WindowReference> Window::getWindowReference() {
 
 void Window::refresh()
 {
-	box(window->getWINDOW(), 0, 0);
-	wrefresh(window->getWINDOW());
 	if (snapped) {
 		if (auto prnt = parent.lock()) {
-			window->setX(prnt->getX() + (x * prnt->getWidth()));
-			window->setY(prnt->getY() + (y * prnt->getHeight()));
-			window->setWidth(width * prnt->getWidth());
-			window->setHeight(height * prnt->getHeight());
+			int xOffset = (x * (float)prnt->getWidth()) + prnt->getX();
+			int yOffset = (y * (float)prnt->getHeight()) + prnt->getY();
+			int newWidth = width * (float)prnt->getWidth();
+			int newHeight = height * (float)prnt->getHeight();
+			window->setSize(newHeight, newWidth);
+			window->setPosition(yOffset, xOffset);
 		}
 		else {
 			snapped = false;
 		}
 	}
+	box(window->getWINDOW(), 0, 0);
+	wrefresh(window->getWINDOW());
 }
 
 void Window::setScroll(bool value)
@@ -141,39 +141,16 @@ int Window::getHeight()
 	return window->getHeight();
 }
 
-void Window::setX(int value)
-{
-	snapped = false;
-	window->setX(value);
-}
-
-void Window::setY(int value)
-{
-	snapped = false;
-	window->setY(value);
-}
-
-void Window::setWidth(int value)
-{
-	snapped = false;
-	window->setWidth(value);
-}
-
-void Window::setHeight(int value)
-{
-	window->setHeight(value);
-}
-
 void Window::setPosition(int y, int x)
 {
-	setX(x);
-	setY(y);
+	snapped = false;
+	window->setPosition(y, x);
 }
 
 void Window::setSize(int height, int width)
 {
-	setWidth(width);
-	setHeight(height);
+	snapped = false;
+	window->setSize(height, width);
 }
 
 void Window::snapToParent(Window parent, float height, float width, float y, float x)

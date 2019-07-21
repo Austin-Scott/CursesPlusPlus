@@ -36,10 +36,6 @@ public:
 	int getWidth();
 	int getHeight();
 
-	void setX(int value);
-	void setY(int value);
-	void setWidth(int value);
-	void setHeight(int value);
 	void setPosition(int y, int x);
 	void setSize(int height, int width);
 

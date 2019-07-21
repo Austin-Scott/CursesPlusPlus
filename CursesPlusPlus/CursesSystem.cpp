@@ -6,7 +6,7 @@ CursesSystem CursesSystem::system = CursesSystem();
 CursesSystem::CursesSystem()
 {
 	initscr();
-	rootWindow = new Window(curscr);
+	rootWindow = new Window(stdscr);
 }
 
 CursesSystem::~CursesSystem()
