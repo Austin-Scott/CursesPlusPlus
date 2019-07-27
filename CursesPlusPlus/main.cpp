@@ -1,5 +1,7 @@
 #include "CursesPlusPlus.h"
 
+using namespace cursor;
+
 int main(int argc, char* argv[])
 {
 	CursesSystem::echo(false);
@@ -20,9 +22,9 @@ int main(int argc, char* argv[])
 			win.updateSizeAndPosition();
 			test1.updateSizeAndPosition();
 
-			root << Cursor::moveTo(1, 1) << Cursor::setColor(Color::White, Color::Red) << "I am root." << Cursor::clearToEndOfWindow;
-			win << Cursor::moveTo(1, 1) << Cursor::setColor(Color::White, Color::Green) << "I am win." << Cursor::clearToEndOfWindow;
-			test1 << Cursor::moveTo(1, 1) << Cursor::setColor(Color::White, Color::Blue) << "I am test1." << Cursor::clearToEndOfWindow;
+			root << moveTo(1, 1) << setColor(Color::White, Color::Red) << "I am root." << clearToEndOfWindow;
+			win << moveTo(1, 1) << setColor(Color::White, Color::Green) << "I am win." << clearToEndOfWindow;
+			test1 << moveTo(1, 1) << setColor(Color::White, Color::Blue) << "I am test1." << clearToEndOfWindow;
 
 			root.drawBorder();
 			win.drawBorder();

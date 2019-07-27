@@ -15,74 +15,56 @@ const std::map<Attr, chtype> attrTable = {
 	{Attr::AltCharacterSet, A_ALTCHARSET}
 };
 
-const Cursor Cursor::moveTo(int row, int col)
+const Cursor cursor::moveTo(int row, int col)
 {
 	Cursor result = Cursor();
-	result.type = Type::Move;
+	result.type = Cursor::Type::Move;
 	result.row = row;
 	result.col = col;
 	return result;
 }
 
-const Cursor Cursor::attributeOn(Attr attr)
+const Cursor cursor::attributeOn(Attr attr)
 {
 	Cursor result = Cursor();
-	result.type = Type::AttributesOn;
+	result.type = Cursor::Type::AttributesOn;
 	result.attrMask = attrTable.at(attr);
 	return result;
 }
 
-const Cursor Cursor::attributesOn(std::vector<Attr> attrs)
+const Cursor cursor::attributesOn(std::vector<Attr> attrs)
 {
 	Cursor result = Cursor();
-	result.type = Type::AttributesOn;
+	result.type = Cursor::Type::AttributesOn;
 	for (Attr attr : attrs) {
 		result.attrMask |= attrTable.at(attr);
 	}
 	return result;
 }
 
-const Cursor Cursor::attributeOff(Attr attr)
+const Cursor cursor::attributeOff(Attr attr)
 {
 	Cursor result = Cursor();
-	result.type = Type::AttributesOff;
+	result.type = Cursor::Type::AttributesOff;
 	result.attrMask = attrTable.at(attr);
 	return result;
 }
 
-const Cursor Cursor::attributesOff(std::vector<Attr> attrs)
+const Cursor cursor::attributesOff(std::vector<Attr> attrs)
 {
 	Cursor result = Cursor();
-	result.type = Type::AttributesOff;
+	result.type = Cursor::Type::AttributesOff;
 	for (Attr attr : attrs) {
 		result.attrMask |= attrTable.at(attr);
 	}
 	return result;
 }
 
-const Cursor Cursor::setColor(Color foreground, Color background)
+const Cursor cursor::setColor(Color foreground, Color background)
 {
 	Cursor result = Cursor();
-	result.type = Type::SetColor;
+	result.type = Cursor::Type::SetColor;
 	result.foreground = foreground;
 	result.background = background;
 	return result;
 }
-
-const Cursor Cursor::endl = []() {
-	Cursor result = Cursor();
-	result.type = Type::EndLine;
-	return result;
-}();
-
-const Cursor Cursor::clearToEndOfLine = []() {
-	Cursor result = Cursor();
-	result.type = Type::ClearToEndOfLine;
-	return result;
-}();
-
-const Cursor Cursor::clearToEndOfWindow = []() {
-	Cursor result = Cursor();
-	result.type = Type::ClearToEndOfWindow;
-	return result;
-}();

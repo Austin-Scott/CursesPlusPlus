@@ -40,8 +40,6 @@ public:
 		ClearToEndOfWindow
 	};
 
-private:
-	const Cursor* nextInstruction = nullptr;
 	Type type;
 	std::string text;
 	int row, col;
@@ -49,7 +47,6 @@ private:
 	Color foreground;
 	Color background;
 
-public:
 	friend class Window;
 
 	Cursor() { type = Type::Empty; }
@@ -61,14 +58,31 @@ public:
 		type = Type::Text;
 		text = std::string(value);
 	}
-
-	static const Cursor moveTo(int row, int col);
-	static const Cursor endl;
-	static const Cursor clearToEndOfLine;
-	static const Cursor clearToEndOfWindow;
-	static const Cursor attributeOn(Attr attr);
-	static const Cursor attributesOn(std::vector<Attr> attrs);
-	static const Cursor attributeOff(Attr attr);
-	static const Cursor attributesOff(std::vector<Attr> attrs);
-	static const Cursor setColor(Color foreground, Color background);
 };
+
+namespace cursor {
+	const Cursor moveTo(int row, int col);
+	const Cursor attributeOn(Attr attr);
+	const Cursor attributesOn(std::vector<Attr> attrs);
+	const Cursor attributeOff(Attr attr);
+	const Cursor attributesOff(std::vector<Attr> attrs);
+	const Cursor setColor(Color foreground, Color background);
+
+	const Cursor endl = []() {
+		Cursor result = Cursor();
+		result.type = Cursor::Type::EndLine;
+		return result;
+	}();
+
+	const Cursor clearToEndOfLine = []() {
+		Cursor result = Cursor();
+		result.type = Cursor::Type::ClearToEndOfLine;
+		return result;
+	}();
+
+	const Cursor clearToEndOfWindow = []() {
+		Cursor result = Cursor();
+		result.type = Cursor::Type::ClearToEndOfWindow;
+		return result;
+	}();
+}
